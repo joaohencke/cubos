@@ -1,0 +1,26 @@
+{
+  "name": "attendance_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon --inspect index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joaohencke/attendance_api.git"
+  },
+  "author": "Joao Hencke <joao.hencke@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joaohencke/attendance_api/issues"
+  },
+  "homepage": "https://github.com/joaohencke/attendance_api#readme",
+  "dependencies": {
+    "compress": "^0.99.0",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.11"
+  }
+}
