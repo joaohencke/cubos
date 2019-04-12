@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --inspect index.js"
+    "dev": "nodemon --inspect index.js",
+    "lint": "eslint"
   },
   "repository": {
     "type": "git",
@@ -18,9 +19,16 @@
   "homepage": "https://github.com/joaohencke/attendance_api#readme",
   "dependencies": {
     "compress": "^0.99.0",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "morgan": "^1.9.1"
   },
   "devDependencies": {
-    "nodemon": "^1.18.11"
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^4.1.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "nodemon": "^1.18.11",
+    "prettier": "^1.16.4"
   }
 }
