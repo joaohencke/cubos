@@ -22,6 +22,6 @@ Object.keys(apis).forEach(api => {
 });
 
 // error handling
-app.use((err, req, res) => handler(res, err));
+app.use((err, req, res, next) => handler(res, err));
 
 app.listen(config.port, () => console.log(`express listening on port ${config.port}`));
