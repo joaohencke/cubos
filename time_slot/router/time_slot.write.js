@@ -16,8 +16,10 @@ module.exports = router;
  *         schema:
  *          $ref: '#/definitions/TimeSlot'
  *     responses:
- *       '200':
- *         description: Lista dos dias
+ *       '201':
+ *          description: Slot criado
+ *       '400':
+ *          description: Caso exista algum conflito
  */
 router.post(
   '/',
@@ -31,13 +33,30 @@ router.post(
   ),
   (req, res, next) => {
     create(req.validData)
-      .then(result => res.json(result))
+      .then(result => res.status(201).json(result))
       .catch(next);
   },
 );
 
+/**
+ * @swagger
+ * /time-slot/{day}:
+ *  delete:
+ *    description: Remove um dia da lista
+ *    parameters:
+ *      - in: path
+ *        name: day
+ *        description: O dia a ser removido no formato DD-MM-YYYY
+ *        required: true
+ *    responses:
+ *      '204':
+ *        description: Removido com sucesso
+ *      '400':
+ *        description: Caso o dia informado não exista
+ */
+
 router.delete('/:day', validate({ day: 'slotDate' }, 'params'), (req, res, next) => {
   remove(req.validData)
-    .then(result => res.json(result))
+    .then(() => res.status(204).end())
     .catch(next);
 });

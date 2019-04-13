@@ -8,7 +8,7 @@ const read = require('./time_slot.read');
  *    properties:
  *      start:
  *        type: string
- *        description: Hora e minuto formato HH:mm
+ *        description: Hora e minuto formato HH:mm.
  *      end:
  *        type: string
  *        description: Hora e minuto formato HH:mm

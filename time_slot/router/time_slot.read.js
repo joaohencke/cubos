@@ -19,11 +19,11 @@ module.exports = router;
  *       - in: query
  *         name: start
  *         type: string
- *         description: Hora formatada HH:mm
+ *         description: Dia formatado DD-MM-YYYY - se utilizado, trará datas no intervalo. Necessário informar os dois intervalos
  *       - in: query
  *         name: end
  *         type: string
- *         description: Hora formatada HH:mm
+ *         description: Dia formatado DD-MM-YYYY - se utilizado, trará datas no intervalo. Necessário informar os dois intervalos
  *       - in: query
  *         name: page
  *         type: number
