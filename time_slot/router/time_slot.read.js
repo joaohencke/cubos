@@ -8,8 +8,7 @@ module.exports = router;
 
 router.get(
   '/',
-
-  validate({ day: 'slotDate?', page: 'numeric?', offset: 'numeric?' }, 'query'),
+  validate({ day: 'slotDate?', start: 'slotDate?', end: 'slotDate?', page: 'numeric?', offset: 'numeric?' }, 'query'),
   (req, res) => {
     res.json(find(req.validData));
   },
