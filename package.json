@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --inspect index.js",
-    "lint": "eslint"
+    "lint": "eslint",
+    "docs": "swagger-jsdoc -d t.js _doc/*.js"
   },
   "repository": {
     "type": "git",
@@ -23,7 +24,9 @@
     "express": "^4.16.4",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
-    "superstruct": "^0.6.1"
+    "superstruct": "^0.6.1",
+    "swagger-jsdoc": "^3.2.8",
+    "swagger-ui-express": "^4.0.2"
   },
   "devDependencies": {
     "eslint": "^5.16.0",

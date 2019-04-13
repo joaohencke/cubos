@@ -32,7 +32,7 @@ const checkTimeConflict = (entity, intervals) => {
   }
 };
 
-exports.find = ({ day, recurrence, start, end, page, offset = 20 } = {}) => {
+exports.find = ({ day, recurrence, start, end, page, limit = 20 } = {}) => {
   reload();
   let data = $data;
 
@@ -48,7 +48,7 @@ exports.find = ({ day, recurrence, start, end, page, offset = 20 } = {}) => {
 
   if (day) data = data.filter(x => x.day === day);
 
-  if (page) data = data.slice(page * offset, (page + 1) * offset);
+  if (page) data = data.slice(page * limit, (page + 1) * limit);
 
   return data;
 };

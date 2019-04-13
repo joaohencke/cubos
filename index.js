@@ -1,5 +1,9 @@
 const express = require('express');
 const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
+const swaggerJSDoc = require('swagger-jsdoc');
+
+const docs = require('./_docs');
 const config = require('./__config');
 const apis = require('./_apis');
 const { handler } = require('./utils/error');
@@ -12,6 +16,8 @@ app.use(
     type: 'application/json',
   }),
 );
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(docs)));
 
 if (config.dev) {
   app.use(morgan('dev'));
