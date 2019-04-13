@@ -11,7 +11,28 @@ const reload = () => ($data = require('./persist/timeslot.json')); //eslint-disa
 
 const persist = () => fsPromise.writeFile(path.join(__dirname, 'persist/timeslot.json'), JSON.stringify($data));
 
-exports.find = ({ day, start, end, page, offset = 20 } = {}) => {
+const checkTimeConflict = (entity, intervals) => {
+  const pattern = 'HH:mm';
+  for (let i = 0, l = entity.intervals.length; i < l; i += 1) {
+    const stored = entity.intervals[i];
+    for (let j = 0, m = intervals.length; j < m; j += 1) {
+      const toInsert = intervals[j];
+      if (
+        moment(toInsert.start, pattern).isBetween(
+          moment(stored.start, pattern),
+          moment(stored.end, pattern),
+          null,
+          '[]',
+        ) ||
+        moment(toInsert.end, pattern).isBetween(moment(stored.start, pattern), moment(stored.end, pattern), null, '[]')
+      ) {
+        throw Boom.badRequest('O intervalo cadastrado conflita com algum horário cadastrado');
+      }
+    }
+  }
+};
+
+exports.find = ({ day, recurrence, start, end, page, offset = 20 } = {}) => {
   reload();
   let data = $data;
 
@@ -23,6 +44,8 @@ exports.find = ({ day, start, end, page, offset = 20 } = {}) => {
     data = data.filter(x => moment(x.day, pattern).isBetween(startMoment, endMoment, null, '[]'));
   }
 
+  if (recurrence) data = data.filter(x => x.recurrence === recurrence);
+
   if (day) data = data.filter(x => x.day === day);
 
   if (page) data = data.slice(page * offset, (page + 1) * offset);
@@ -33,17 +56,28 @@ exports.find = ({ day, start, end, page, offset = 20 } = {}) => {
 exports.create = async ({ day, intervals, recurrence } = {}) => {
   const result = exports.find({ day });
 
-  if (result.length)
-    throw Boom.badRequest('Já existe intervalo para o dia informado. Exclua-o para então, inseri-lo novamente');
+  if (result.length) {
+    const [entity] = result;
 
-  $data.push({ day, intervals, recurrence });
+    if (entity.recurrence !== recurrence)
+      throw Boom.badRequest(
+        'Já existe um intervalo cadastrado para o dia informado com recorrência diferente da atual',
+      );
 
+    checkTimeConflict(entity, intervals);
+
+    entity.intervals.push(...intervals);
+  } else {
+    // need to check if time will conflict with recurrences instead of the day only
+
+    $data.push({ day, intervals, recurrence });
+  }
   await persist();
 
   return $data[$data.length - 1];
 };
 
-exports.remove = async ({ day }) => {
+exports.remove = async ({ day } = {}) => {
   const result = exports.find({ day });
 
   if (!result.length) throw Boom.badRequest('Não existe intervalo para o dia cadastrado');
