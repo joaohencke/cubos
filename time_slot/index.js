@@ -8,8 +8,14 @@ let $data = [];
 
 const fsPromise = fs.promises;
 
+/**
+ * Reload $data with json content
+ */
 const reload = () => ($data = require('./persist/timeslot.json')); //eslint-disable-line
 
+/**
+ * Persist the $data to file
+ */
 const persist = () => fsPromise.writeFile(path.join(__dirname, 'persist/timeslot.json'), JSON.stringify($data));
 
 /**
