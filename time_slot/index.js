@@ -115,6 +115,9 @@ exports.create = async ({ day, intervals, recurrence } = {}) => {
 
 /**
  * Removes intervals for a specific day
+ *
+ * @param {Object} { id }
+ * @throws {BadRequest} if entity doesn't exists
  */
 exports.remove = async ({ id } = {}) => {
   reload();
