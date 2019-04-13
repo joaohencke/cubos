@@ -61,6 +61,7 @@ describe('time slot', () => {
       .end((err, res) => {
         expect(res).to.have.status(201);
         expect(res).to.be.json;
+        expect(res.body).to.have.property('id');
         done();
       });
   });
