@@ -40,22 +40,22 @@ router.post(
 
 /**
  * @swagger
- * /time-slot/{day}:
+ * /time-slot/{id}:
  *  delete:
  *    description: Remove um dia da lista
  *    parameters:
  *      - in: path
- *        name: day
- *        description: O dia a ser removido no formato DD-MM-YYYY
+ *        name: id
+ *        description: O identificador do intervalo a ser removido
  *        required: true
  *    responses:
  *      '204':
  *        description: Removido com sucesso
  *      '400':
- *        description: Caso o dia informado não exista
+ *        description: Caso o id informado não exista
  */
 
-router.delete('/:day', validate({ day: 'slotDate' }, 'params'), (req, res, next) => {
+router.delete('/:id', validate({ id: 'string' }, 'params'), (req, res, next) => {
   remove(req.validData)
     .then(() => res.status(204).end())
     .catch(next);

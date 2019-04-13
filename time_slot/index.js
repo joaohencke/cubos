@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const Boom = require('boom');
 const moment = require('moment');
+const uuid = require('uuid');
 
 let $data = [];
 
@@ -11,12 +12,19 @@ const reload = () => ($data = require('./persist/timeslot.json')); //eslint-disa
 
 const persist = () => fsPromise.writeFile(path.join(__dirname, 'persist/timeslot.json'), JSON.stringify($data));
 
-const checkTimeConflict = (entity, intervals) => {
+/**
+ *
+ * Check if has time conflict between stored intervals and to store intervals
+ *
+ * @param {Object} { storedIntervals, toStoreIntervals }
+ * @throws {BadRequest} if has time conflict
+ */
+function checkTimeConflict({ storedIntervals, toStoreIntervals }) {
   const pattern = 'HH:mm';
-  for (let i = 0, l = entity.intervals.length; i < l; i += 1) {
-    const stored = entity.intervals[i];
-    for (let j = 0, m = intervals.length; j < m; j += 1) {
-      const toInsert = intervals[j];
+  for (let i = 0, l = storedIntervals.length; i < l; i += 1) {
+    const stored = storedIntervals[i];
+    for (let j = 0, m = toStoreIntervals.length; j < m; j += 1) {
+      const toInsert = toStoreIntervals[j];
       if (
         moment(toInsert.start, pattern).isBetween(
           moment(stored.start, pattern),
@@ -30,8 +38,13 @@ const checkTimeConflict = (entity, intervals) => {
       }
     }
   }
-};
+}
 
+/**
+ * Returns stored entities and filter when it needs
+ * @param {Object} { day, recurrence, start, end, page, limit }
+ * @returns {Array}
+ */
 exports.find = ({ day, recurrence, start, end, page, limit = 20 } = {}) => {
   reload();
   let data = $data;
@@ -53,6 +66,12 @@ exports.find = ({ day, recurrence, start, end, page, limit = 20 } = {}) => {
   return data;
 };
 
+/**
+ * Returns avaiables intervals between dates
+ *
+ * @param {Object} {start, end, page, limit}
+ * @returns {Array}
+ */
 exports.avaiables = ({ start, end, page, limit = 20 }) => {
   reload();
   const pattern = 'DD-MM-YYYY';
@@ -72,28 +91,36 @@ exports.avaiables = ({ start, end, page, limit = 20 }) => {
   return Object.values(result);
 };
 
+/**
+ * Create an interval for a date
+ *
+ * @returns {Promise<Object>}
+ * @throws {BadRequest} if has time conflict
+ */
 exports.create = async ({ day, intervals, recurrence } = {}) => {
   const result = exports.find({ day });
 
   if (result.length) {
     for (let i = 0, l = result.length; i < l; i += 1) {
       const entity = result[i];
-      checkTimeConflict(entity, intervals);
+      checkTimeConflict({ storedIntervals: entity.intervals, toStoreIntervals: intervals });
     }
   }
 
-  $data.push({ day, intervals, recurrence });
+  $data.push({ id: uuid.v1(), day, intervals, recurrence });
   await persist();
 
   return $data[$data.length - 1];
 };
 
-exports.remove = async ({ day } = {}) => {
-  const result = exports.find({ day });
+/**
+ * Removes intervals for a specific day
+ */
+exports.remove = async ({ id } = {}) => {
+  reload();
+  const index = $data.findIndex(x => x.id === id);
 
-  if (!result.length) throw Boom.badRequest('Não existe intervalo para o dia cadastrado');
-
-  const index = $data.findIndex(x => x.day === day);
+  if (index < 0) throw Boom.badRequest('O intervalo não existe');
 
   $data.splice(index, 1);
 
