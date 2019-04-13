@@ -26,7 +26,7 @@ const checkTimeConflict = (entity, intervals) => {
         ) ||
         moment(toInsert.end, pattern).isBetween(moment(stored.start, pattern), moment(stored.end, pattern), null, '[]')
       ) {
-        throw Boom.badRequest('O intervalo cadastrado conflita com algum horário cadastrado');
+        throw Boom.badRequest('O intervalo conflita com algum horário cadastrado');
       }
     }
   }
@@ -53,25 +53,36 @@ exports.find = ({ day, recurrence, start, end, page, limit = 20 } = {}) => {
   return data;
 };
 
+exports.avaiables = ({ start, end, page, limit = 20 }) => {
+  reload();
+  const pattern = 'DD-MM-YYYY';
+  const startMoment = moment(start, pattern);
+  const endMoment = moment(end, pattern);
+
+  let result = $data.reduce((acc, { day, intervals }) => {
+    if (!moment(day, pattern).isBetween(startMoment, endMoment, null, '[]')) return acc;
+
+    if (!acc[day]) acc[day] = { day, intervals: [] };
+    acc[day].intervals.push(...intervals);
+    return acc;
+  }, {});
+
+  if (page) result = result.slice(page * limit, (page + 1) * limit);
+
+  return Object.values(result);
+};
+
 exports.create = async ({ day, intervals, recurrence } = {}) => {
   const result = exports.find({ day });
 
   if (result.length) {
-    const [entity] = result;
-
-    if (entity.recurrence !== recurrence)
-      throw Boom.badRequest(
-        'Já existe um intervalo cadastrado para o dia informado com recorrência diferente da atual',
-      );
-
-    checkTimeConflict(entity, intervals);
-
-    entity.intervals.push(...intervals);
-  } else {
-    // need to check if time will conflict with recurrences instead of the day only
-
-    $data.push({ day, intervals, recurrence });
+    for (let i = 0, l = result.length; i < l; i += 1) {
+      const entity = result[i];
+      checkTimeConflict(entity, intervals);
+    }
   }
+
+  $data.push({ day, intervals, recurrence });
   await persist();
 
   return $data[$data.length - 1];
