@@ -1,0 +1,125 @@
+{
+	"info": {
+		"_postman_id": "7835775b-5706-4789-8bdb-f79a5652a242",
+		"name": "Cubos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"day\": \"02-01-2019\",\n  \"intervals\": [{ \"start\": \"22:21\", \"end\": \"22:30\" }],\n  \"recurrence\": \"daily\"\n}\n"
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/time-slot/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"time-slot",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/time-slot/00655880-5e05-11e9-ac14-b16581b4dbfd",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"time-slot",
+						"00655880-5e05-11e9-ac14-b16581b4dbfd"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/time-slot/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"time-slot",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Avaiables",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8888/api/time-slot/avaiables?start=07-10-2018&end=12-10-2018",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888",
+					"path": [
+						"api",
+						"time-slot",
+						"avaiables"
+					],
+					"query": [
+						{
+							"key": "start",
+							"value": "07-10-2018"
+						},
+						{
+							"key": "end",
+							"value": "12-10-2018"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
