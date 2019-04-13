@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --inspect index.js",
+    "dev": "env NODE_ENV=dev nodemon --inspect index.js",
     "lint": "eslint",
     "start": "npm run dev",
     "test": "env NODE_ENV=test mocha ./___specs___/*.spec.js"
