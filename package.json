@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --inspect index.js",
     "lint": "eslint",
-    "docs": "swagger-jsdoc -d t.js _doc/*.js"
+    "start": "npm run dev"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
     "boom": "^7.3.0",
     "compress": "^0.99.0",
     "express": "^4.16.4",
+    "helmet": "^3.16.0",
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
     "superstruct": "^0.6.1",

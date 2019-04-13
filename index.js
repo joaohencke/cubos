@@ -2,6 +2,7 @@ const express = require('express');
 const morgan = require('morgan');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJSDoc = require('swagger-jsdoc');
+const helmet = require('helmet');
 
 const docs = require('./_docs');
 const config = require('./__config');
@@ -10,6 +11,7 @@ const { handler } = require('./utils/error');
 
 const app = express();
 
+app.use(helmet());
 app.use(
   express.json({
     limit: '10mb',
