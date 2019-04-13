@@ -1,5 +1,5 @@
 const express = require('express');
-const { validate, struct } = require('../../utils/validation');
+const { validate } = require('../../utils/validation');
 const { find } = require('../');
 
 const router = express.Router({ mergeParams: true });
@@ -12,10 +12,4 @@ router.get(
   (req, res) => {
     res.json(find(req.validData));
   },
-);
-
-router.get(
-  '/avaiable-between',
-  validate({ days: struct.optional(struct.list(['string'])) }, 'query'),
-  (req, res, next) => {},
 );
