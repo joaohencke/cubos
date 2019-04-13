@@ -7,16 +7,17 @@ const uuid = require('uuid');
 let $data = [];
 
 const fsPromise = fs.promises;
-
+const dbFile = process.env.NODE_ENV === 'test' ? 'timeslot_test.json' : 'timeslot.json';
+const dbPath = path.join(__dirname, 'persist', dbFile);
 /**
  * Reload $data with json content
  */
-const reload = () => ($data = require('./persist/timeslot.json')); //eslint-disable-line
+const reload = () => ($data = require(dbPath)); //eslint-disable-line
 
 /**
  * Persist the $data to file
  */
-const persist = () => fsPromise.writeFile(path.join(__dirname, 'persist/timeslot.json'), JSON.stringify($data));
+const persist = () => fsPromise.writeFile(dbPath, JSON.stringify($data));
 
 /**
  *

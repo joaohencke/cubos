@@ -1,4 +1,4 @@
 module.exports = {
-  dev: process.env.NODE_ENV !== 'production',
+  dev: !['production', 'test'].includes(process.env.NODE_ENV),
   port: process.env.PORT || 8888,
 };
