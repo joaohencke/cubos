@@ -25,9 +25,3 @@ Object.keys(apis).forEach(api => {
 app.use((err, req, res, next) => handler(res, err));
 
 app.listen(config.port, () => console.log(`express listening on port ${config.port}`));
-
-(async () => {
-  const timeslot = require('./time_slot');
-
-  timeslot.create({ day: '24-12-2018', recurrence: 'none', intervals: [{ start: '10:10', end: '10:40' }] });
-})();
