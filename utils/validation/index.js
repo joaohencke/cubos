@@ -4,6 +4,9 @@ const moment = require('moment');
 
 const { handler } = require('../error');
 
+/**
+ * superstruct declaration with custom types
+ */
 exports.struct = superstruct({
   types: {
     numeric: v => !!v && !Number.isNaN(v),
@@ -24,6 +27,12 @@ exports.struct = superstruct({
   },
 });
 
+/**
+ * Format struct error's message
+ *
+ * @param {Object} error
+ * @returns {String} formatted message
+ */
 exports.formatMessage = error => {
   let errMessage = `${error.message}`;
   if (error.reason) errMessage += ` - ${error.reason}`;
@@ -33,6 +42,12 @@ exports.formatMessage = error => {
   return errMessage;
 };
 
+/**
+ * Validate parameters from a Request path based on a Schema
+ *
+ * @param {Object} schema struct schema object
+ * @param {String} path request path to validate - if none, will get from query, params and body (the priority order is inverse)
+ */
 exports.validate = (schema, path) => (req, res, next) => {
   try {
     const Schema = exports.struct.partial(schema);

@@ -1,5 +1,11 @@
 const Boom = require('boom');
 
+/**
+ * Http error handler
+ *
+ * @param {Object} res express response object
+ * @param {Error} err error
+ */
 module.exports = (res, err) => {
   let error = Boom.isBoom(err) ? err : Boom.boomify(err);
   if (error.name === 'ValidationError') {
