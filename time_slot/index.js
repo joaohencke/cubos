@@ -40,7 +40,7 @@ function checkTimeConflict({ storedIntervals, toStoreIntervals }) {
         ) ||
         moment(toInsert.end, pattern).isBetween(moment(stored.start, pattern), moment(stored.end, pattern), null, '[]')
       ) {
-        throw Boom.badRequest('O intervalo conflita com algum horário cadastrado');
+        throw Boom.badRequest(`Intervalo conflitante: ${stored.start} - ${stored.end}`);
       }
     }
   }
@@ -84,17 +84,40 @@ exports.avaiables = ({ start, end, page, limit = 20 }) => {
   const startMoment = moment(start, pattern);
   const endMoment = moment(end, pattern);
 
-  let result = $data.reduce((acc, { day, intervals }) => {
-    if (!moment(day, pattern).isBetween(startMoment, endMoment, null, '[]')) return acc;
+  let result = $data.reduce((acc, { day, intervals, recurrence }) => {
+    switch (recurrence) {
+      case 'none':
+        if (!moment(day, pattern).isBetween(startMoment, endMoment, null, '[]')) return acc;
+        break;
+      case 'daily':
+      case 'weekly':
+        if (moment(day, pattern).isSameOrBefore(endMoment)) {
+          const dayMoment = moment(day, pattern);
+
+          while (dayMoment.isSameOrBefore(endMoment)) {
+            if (!acc[dayMoment.format(pattern)])
+              acc[dayMoment.format(pattern)] = { day: dayMoment.format(pattern), intervals: [] };
+            acc[dayMoment.format(pattern)].intervals.push(...intervals);
+
+            dayMoment.add(1, recurrence === 'daily' ? 'day' : 'week');
+          }
+        }
+        return acc;
+
+      default:
+        return acc;
+    }
 
     if (!acc[day]) acc[day] = { day, intervals: [] };
     acc[day].intervals.push(...intervals);
     return acc;
   }, {});
 
+  result = Object.values(result);
+
   if (page) result = result.slice(page * limit, (page + 1) * limit);
 
-  return Object.values(result);
+  return result;
 };
 
 /**
@@ -104,13 +127,23 @@ exports.avaiables = ({ start, end, page, limit = 20 }) => {
  * @throws {BadRequest} if has time conflict
  */
 exports.create = async ({ day, intervals, recurrence } = {}) => {
-  const result = exports.find({ day });
+  const result = [...exports.find({ day }), ...exports.find({ recurrence: 'daily' })];
 
-  if (result.length) {
-    for (let i = 0, l = result.length; i < l; i += 1) {
-      const entity = result[i];
-      checkTimeConflict({ storedIntervals: entity.intervals, toStoreIntervals: intervals });
-    }
+  for (let i = 0, l = result.length; i < l; i += 1) {
+    const entity = result[i];
+    checkTimeConflict({ storedIntervals: entity.intervals, toStoreIntervals: intervals });
+  }
+
+  const weeklyRecurrences = exports.find({ recurrence: 'weekly' });
+  const pattern = 'DD-MM-YYYY';
+
+  for (let i = 0, l = weeklyRecurrences.length; i < l; i += 1) {
+    const entity = weeklyRecurrences[i];
+
+    let datediff = moment(entity.day, pattern).diff(moment(day, pattern), 'days');
+
+    if (datediff < 0) datediff *= -1;
+    if (datediff % 7 === 0) checkTimeConflict({ storedIntervals: entity.intervals, toStoreIntervals: intervals });
   }
 
   $data.push({ id: uuid.v1(), day, intervals, recurrence });
