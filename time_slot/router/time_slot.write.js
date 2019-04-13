@@ -11,7 +11,7 @@ router.post(
   validate(
     {
       day: 'slotDate',
-      intervals: struct.optional(struct.list([struct.partial({ start: 'string', end: 'string' })])),
+      intervals: struct.optional(struct.list([struct.partial({ start: 'slotTime', end: 'slotTime' })])),
       recurrence: struct.enum(['none', 'daily', 'weekly']),
     },
     'body',

@@ -12,7 +12,14 @@ exports.struct = superstruct({
 
       if (valid) return valid;
 
-      return 'invalid_format';
+      return 'invalid_date_format';
+    },
+    slotTime: v => {
+      const valid = moment(v, 'HH:mm', true).isValid();
+
+      if (valid) return valid;
+
+      return 'invalid_time_format';
     },
   },
 });
