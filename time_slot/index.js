@@ -1,7 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 const Boom = require('boom');
-const moment = require('moment');
 
 let $data = [];
 

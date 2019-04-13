@@ -29,5 +29,5 @@ app.listen(config.port, () => console.log(`express listening on port ${config.po
 (async () => {
   const timeslot = require('./time_slot');
 
-  timeslot.create({ day: '2019-02-23', recurrence: 'none', intervals: [{ start: '10:10', end: '10:40' }] });
+  timeslot.create({ day: '24-12-2018', recurrence: 'none', intervals: [{ start: '10:10', end: '10:40' }] });
 })();

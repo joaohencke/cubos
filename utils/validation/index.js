@@ -7,7 +7,13 @@ const { handler } = require('../error');
 exports.struct = superstruct({
   types: {
     numeric: v => !!v && !Number.isNaN(v),
-    slotDate: v => moment(v, 'DD-MM-YYYY').isValid(),
+    slotDate: v => {
+      const valid = moment(v, 'DD-MM-YYYY', true).isValid();
+
+      if (valid) return valid;
+
+      return 'invalid_format';
+    },
   },
 });
 
