@@ -1,9 +1,15 @@
 const { superstruct } = require('superstruct');
 const Boom = require('boom');
+const moment = require('moment');
 
 const { handler } = require('../error');
 
-exports.struct = superstruct({});
+exports.struct = superstruct({
+  types: {
+    numeric: v => !!v && !Number.isNaN(v),
+    slotDate: v => moment(v, 'DD-MM-YYYY').isValid(),
+  },
+});
 
 exports.formatMessage = error => {
   let errMessage = `${error.message}`;

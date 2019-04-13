@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const Boom = require('boom');
+const moment = require('moment');
 
 let $data = [];
 
@@ -10,10 +11,15 @@ const reload = () => ($data = require('./persist/timeslot.json')); //eslint-disa
 
 const persist = () => fsPromise.writeFile(path.join(__dirname, 'persist/timeslot.json'), JSON.stringify($data));
 
-exports.find = ({ day } = {}) => {
+exports.find = ({ day, page, offset = 20 } = {}) => {
   reload();
+  let data;
+  if (day) data = $data.filter(x => x.day === day);
+  else data = $data;
 
-  return $data.filter(x => x.day === day);
+  if (page) data = data.slice(page * offset, (page + 1) * offset);
+
+  return data;
 };
 
 exports.create = async ({ day, intervals, recurrence } = {}) => {
