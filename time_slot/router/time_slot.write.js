@@ -6,6 +6,19 @@ const router = express.Router({ mergeParams: true });
 
 module.exports = router;
 
+/**
+ * @swagger
+ * /time-slot:
+ *   post:
+ *     description: Cadastra um novo intervalo no dia ou adiciona ou intervalo ao dia já existente
+ *     parameters:
+ *       - in: body
+ *         schema:
+ *          $ref: '#/definitions/TimeSlot'
+ *     responses:
+ *       '200':
+ *         description: Lista dos dias
+ */
 router.post(
   '/',
   validate(

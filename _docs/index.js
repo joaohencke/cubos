@@ -8,5 +8,5 @@ module.exports = {
     host: 'localhost:8888',
     basePath: '/api',
   },
-  apis: ['*/router/*.read.js', '*/router/*.write.js'],
+  apis: ['*/router/*.js'],
 };
